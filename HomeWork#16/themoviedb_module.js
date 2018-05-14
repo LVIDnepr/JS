@@ -32,7 +32,7 @@ module.exports.everythingAboutMovie = function(titleMovie){
 				var vote_average = " Vote average: " + film.vote_average + " themoviedb <br>";
 				var genres = " Genres: " + film.genres[0].name + " <br>";
 				var poster_path = "https://image.tmdb.org/t/p/original/" + film.poster_path;				
-				var image_poster = "<img src="+poster_path+ " align=\"left\" width=\"17%\" height=\"30%\"> <br>";
+				var image_poster = "<img src=" + poster_path + " align=\"left\" width=\"17%\" height=\"30%\"> <br>";
 				var aboutMovie = image_poster + overview + release_date + budget + title + popularity + vote_average + runtime + revenue + genres ;
 				return aboutMovie;
 			}
