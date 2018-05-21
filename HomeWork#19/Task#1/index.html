@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+	<title>CHAT</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<script>
+		var socket = io();
+
+		
+
+		function setUsername(){
+			socket.emit('setUsername', document.getElementById('name').value);
+		}
+
+		var user;
+
+		socket.on('userExists', function(data){
+			document.getElementById('error').innerHTML = data;
+		});
+
+
+		socket.on('userSet', function(data){
+			user = data.userName;
+			document.body.innerHTML = '\
+				<div class="container"\
+				<div class="row"\
+					<div class="col-lg-6 offset-lg-3">\
+						<div class="form-group"> \
+							<input type="text" class="form-control" id="message" placeholder="Пиши здесь..."> \
+								<button type="button" class="btn btn-primary" name="button" onclick="sendMessage()">Отправить</button>\
+								<div id="message-container"></div>\
+						</div>\
+					</div>\
+				</div>\
+				</div>';
+		});
+
+		
+		function sendMessage(){
+			var messageData = document.getElementById('message').value;
+			if(messageData) {
+				socket.emit('message', {user: user, message: messageData});
+			}
+
+			document.getElementById('message').value = '';
+		}
+
+		socket.on('newMessage', function(data){
+			if(user){
+				document.getElementById('message-container').innerHTML += '<div><b>' + data.user + '</b>: ' + data.message + '</div>';
+			}
+		});
+	</script>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 offset-lg-3">
+				<div id="error"></div>
+				<div class="form-group">
+					<label for="name">Давай общаться!</label>
+					<input type="text" class="form-control" id="name" placeholder="Введи свое имя, незнакомец!">
+					<button type="submit" class="btn btn-primary" name="button" onclick="setUsername()">Вперед!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
+</html>
